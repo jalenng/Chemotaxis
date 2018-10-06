@@ -77,10 +77,6 @@ class Bacteria
 		
 		myXBias = (distFromMouse * Math.cos(angleFromMouse) / (BACTERIA_WIDTH * 1));
 		myYBias = (distFromMouse * Math.sin(angleFromMouse) / (BACTERIA_WIDTH * 1));
-
-		println("angleFromMouse: "+angleFromMouse * 57.2958);
-		println("myXBias: "+myXBias);
-		println("myYBias: "+myYBias);
 	}
 	void show()
 	{
