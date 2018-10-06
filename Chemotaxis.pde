@@ -1,41 +1,59 @@
-int BACTERIA_WIDTH = 10;
-Bacteria[] colony = new Bacteria[1];   
+int BACTERIA_WIDTH = 50;
+int backgroundBrightness = 255;
+Bacteria[] colony = new Bacteria[50];   
+boolean isFollowingMouse = false;
 
 void setup()   
 {
 	size(500, 500);
-	background(255);
 	frameRate(60);
 	for (int i = 0; i < colony.length; i++)
 	{
 		colony[i] = new Bacteria((int)(Math.random() * width), 
 			                     (int)(Math.random() * height));
 	}
-}   
+}
+
 void draw()
 {    
-	fill(255, 255, 255, 10);
+	fill(backgroundBrightness, backgroundBrightness, backgroundBrightness, 10);
 	rect(0, 0, width, height);
 	for (int i = 0; i < colony.length; i++)
 	{
 		colony[i].walk();
 		colony[i].show();
-		colony[i].updateBias();
+		if (isFollowingMouse)
+			colony[i].updateBias();
 	}
-  
-}  
+}
+
+void mousePressed()
+{
+	if (isFollowingMouse)
+	{
+		isFollowingMouse = false;
+		backgroundBrightness = 255;
+		setup();
+	}
+	else
+	{
+		isFollowingMouse = true;
+		backgroundBrightness = 0;
+	}
+}
+
 class Bacteria    
 {     
 	int myX, myY;
 	color myColor;
-	int myXBias, myYBias;
+	double myXBias, myYBias;
 	Bacteria(int x, int y)
 	{
 		myX = x;
 		myY = y;
 		myColor = color((int)(Math.random() * 256), 
 			            (int)(Math.random() * 256), 
-			            (int)(Math.random() * 256), 255);
+			            (int)(Math.random() * 256), 10);
 	}
 	void walk()
 	{
@@ -46,7 +64,7 @@ class Bacteria
 	{
 		int horDistFromMouse = mouseX - myX;
 		int vertDistFromMouse = mouseY - myY;
-		double distFromMouse = (Math.sqrt(sq(horDistFromMouse) + sq(vertDistFromMouse)));
+		double distFromMouse = (double)(Math.sqrt(sq(horDistFromMouse) + sq(vertDistFromMouse)));
 		double angleFromMouse;
 		if (horDistFromMouse == 0) {
 			if (vertDistFromMouse > 0)
@@ -54,16 +72,15 @@ class Bacteria
 			else 
 				angleFromMouse = - PI / 2;
 		} else {
-			angleFromMouse = Math.atan(vertDistFromMouse / horDistFromMouse);
+			angleFromMouse = Math.atan2(vertDistFromMouse, horDistFromMouse);
 		}
 		
-		myXBias = (int)(distFromMouse * Math.cos(angleFromMouse) / (BACTERIA_WIDTH * 10));
-		myYBias = (int)(distFromMouse * Math.sin(angleFromMouse) / (BACTERIA_WIDTH * 10));
+		myXBias = (distFromMouse * Math.cos(angleFromMouse) / (BACTERIA_WIDTH * 1));
+		myYBias = (distFromMouse * Math.sin(angleFromMouse) / (BACTERIA_WIDTH * 1));
 
-		println("horDistFromMouse: "+horDistFromMouse);
-		println("vertDistFromMouse: "+vertDistFromMouse);
-		println("distFromMouse: "+distFromMouse);
-		println("angleFromMouse: "+angleFromMouse);
+		println("angleFromMouse: "+angleFromMouse * 57.2958);
+		println("myXBias: "+myXBias);
+		println("myYBias: "+myYBias);
 	}
 	void show()
 	{
